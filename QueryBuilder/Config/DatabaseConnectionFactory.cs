@@ -11,6 +11,7 @@ using System.Data.SQLite;
 using System.Data.Odbc;
 using System.Data.OleDb;
 using QueryBuilder.DatabaseConnections;
+using QueryBuilder.Exceptions;
 
 namespace QueryBuilder.Config
 {
@@ -18,7 +19,7 @@ namespace QueryBuilder.Config
     {
         public DatabaseConnectionFactory() { }
 
-        public DatabaseConnection CreateDbConnection(DatabaseType databaseType, string connectionString)
+        public IDatabaseConnection CreateDbConnection(DatabaseType databaseType, string connectionString)
         {
             try
             {
@@ -53,13 +54,12 @@ namespace QueryBuilder.Config
                 else
                 {
                     //thrown if database type setting is not null, but is not an integer that has a corresponding DatabaseType enum value.
-                    throw new Exception("Database type is not recognized");
+                    throw new DatabaseTypeNotRecognizedException($"Database type, {databaseType}, is not recognized");
                 }
             }
             catch (Exception)
             {
-                //thrown if database type setting is null or not able to be found.
-                //throw new DatabaseTypeNotRecognizedException("Database type is not recognized");
+                //thrown if database type setting is null.
                 throw;
             }
         }

@@ -45,18 +45,6 @@ namespace QueryBuilder.SqlGenerators
         {
             base.tableSchema = query.TableSchema;
 
-            //Query newQuery = new Query("main").SetDistinct(query.Distinct)
-            //                                  .SetColumns(query.Columns)
-            //                                  .SetTable(query.Table)
-            //                                  .SetCriteria(query.Criteria)
-            //                                  .SetSuppressNulls(query.SuppressNulls)
-            //                                  .SetGroupBy(query.GroupBy)
-            //                                  .SetOrderBy(query.OrderBy)
-            //                                  .SetAscending(query.Ascending)
-            //                                  .SetLimit(query.Limit)
-            //                                  .SetOffset(query.Offset);
-
-
             try
             {
                 StringBuilder sql = new StringBuilder("");

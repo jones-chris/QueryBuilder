@@ -93,25 +93,26 @@ namespace QueryBuilder.SqlGenerators
         public Query SetLimit(string limit)
         {
             // make sure
-            int parsedLimit;
-            bool isInteger = int.TryParse(limit, out parsedLimit);
+            //int parsedLimit;
+            //bool isInteger = int.TryParse(limit, out parsedLimit);
 
-            if (! isInteger)
-            {
-                Limit = limit;
-            }
-            else
-            {
-                if (parsedLimit > 1000000)
-                {
-                    Limit = "1000000"; // 1 million.
-                }
-                else
-                {
-                    Limit = limit;
-                }
-            }
-            
+            //if (! isInteger)
+            //{
+            //    Limit = limit;
+            //}
+            //else
+            //{
+            //    if (parsedLimit > 1000000)
+            //    {
+            //        Limit = "1000000"; // 1 million.
+            //    }
+            //    else
+            //    {
+            //        Limit = limit;
+            //    }
+            //}
+
+            Limit = limit;
             return this;
         }
 

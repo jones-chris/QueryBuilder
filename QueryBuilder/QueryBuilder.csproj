@@ -84,6 +84,8 @@
     <Compile Include="Config\SqlGeneratorFactory.cs" />
     <Compile Include="DatabaseConnection\DatabaseConnection.cs" />
     <Compile Include="DatabaseConnection\IDatabaseConnection.cs" />
+    <Compile Include="Exceptions\BadSQLException.cs" />
+    <Compile Include="Exceptions\DatabaseTypeNotRecognizedException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlGenerators\AccessSqlGenerator.cs" />
     <Compile Include="SqlGenerators\BaseSqlGenerator.cs" />

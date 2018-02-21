@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using QueryBuilder.Config;
 using System.Data;
+using QueryBuilder.Exceptions;
 
 namespace QueryBuilder.SqlGenerators
 {
@@ -126,9 +127,9 @@ public abstract class BaseSqlGenerator
                 }
                 else
                 {
-                    throw new Exception($"The criteria at index {criteria.IndexOf(theCriteria)} in the Criteria list has a " +
-                                                "null value for it's Column, Operator, or Filter.  Please make sure each Criteria has " +
-                                                "has a non-null value for each of these properties");
+                    throw new BadSQLException($"The criteria at index {criteria.IndexOf(theCriteria)} in the Criteria list has a " +
+                                               "null value for it's Column, Operator, or Filter.  Please make sure each Criteria has " +
+                                               "has a non-null value for each of these properties");
                 }
             }
 

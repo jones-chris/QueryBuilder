@@ -46,21 +46,6 @@ namespace QueryBuilder.SqlGenerators
             base.typeMappings = mappings;
         }
 
-        //public override string CreateSql(DataTable tableSchema, bool distinct = false, List<string> columns = null, string table = null, List<Criteria> criteria = null,
-        //    bool groupBy = false, bool orderBy = false, string limit = null, string offset = null, bool asc = false)
-        //{
-        //    base.tableSchema = tableSchema;
-
-        //    StringBuilder sql = new StringBuilder("");
-        //    sql.Append(CreateSELECTClause(distinct, columns, limit));
-        //    sql.Append(CreateFROMClause(table));
-        //    sql.Append(CreateWHEREClause(criteria));
-        //    sql.Append(CreateGROUPBYCluase(groupBy, columns));
-        //    sql.Append(CreateORDERBYCluase(orderBy, columns, asc));
-        //    sql.Append(CreateOffsetClause(offset));
-        //    return sql.ToString().Replace("  ", " ");
-        //}
-
         public override string CreateSql(Query query)
         {
             base.tableSchema = query.TableSchema;

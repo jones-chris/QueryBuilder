@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using QueryBuilder.SqlGenerators;
 using QueryBuilder.Config;
+using QueryBuilder.Exceptions;
 
 namespace QueryBuilder.Config
 {
@@ -48,14 +49,14 @@ namespace QueryBuilder.Config
                 {
                     //Thrown if database type setting is not null, but is not an integer that does not have a corresponding DatabaseType enum value.
                     //For example, a database type setting of 20 does not return an enum value in DatabaseType, so this exception would be thrown.
-                    throw new Exception("Database type is not recognized");
+                    throw new DatabaseTypeNotRecognizedException($"Database type, {databaseType}, is not recognized");
                 }
             }
             catch (Exception)
             {
-                //Thrown if database type setting is null or not able to be found.
+                //Thrown if database type setting is null.
                 //For example, a database type setting of null results in the databaseType field not being assigned, so this exception would be thrown.
-                throw new Exception("Database type is not recognized");
+                throw;
             }
         }
     }
