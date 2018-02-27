@@ -18,7 +18,7 @@ namespace QueryBuilder.SqlGenerators
         public List<Criteria> Criteria { get; private set; }
         public bool GroupBy { get; private set; }
         public bool OrderBy { get; private set; }
-        public string Limit { get; private set; }
+        public int Limit { get; private set; }
         public bool Ascending { get; private set; }
         public string Offset { get; private set; }
         public bool SuppressNulls { get; private set; }
@@ -89,33 +89,17 @@ namespace QueryBuilder.SqlGenerators
         /// </summary>
         /// <param name="limit"></param>
         /// <returns>Query</returns>
-        /// <exception cref="member">description</exception> 
-        public Query SetLimit(string limit)
+        public Query SetLimit(int limit)
         {
-            // make sure
-            //int parsedLimit;
-            //bool isInteger = int.TryParse(limit, out parsedLimit);
-
-            //if (! isInteger)
-            //{
-            //    Limit = limit;
-            //}
-            //else
-            //{
-            //    if (parsedLimit > 1000000)
-            //    {
-            //        Limit = "1000000"; // 1 million.
-            //    }
-            //    else
-            //    {
-            //        Limit = limit;
-            //    }
-            //}
-
             Limit = limit;
             return this;
         }
 
+        /// <summary>
+        /// Sets the query's ascending property
+        /// </summary>
+        /// <param name="ascending"></param>
+        /// <returns>Query</returns>
         public Query SetAscending(bool ascending)
         {
             Ascending = ascending;
@@ -228,28 +212,5 @@ namespace QueryBuilder.SqlGenerators
             return false;
         }
 
-        //private bool LimitIsGreaterThan1Million(string limit)
-        //{
-        //    // parse to int
-        //    int limitAsInt = 0;
-        //    try
-        //    {
-        //        limitAsInt = int.Parse(limit);
-        //    }
-        //    catch (ArgumentNullException)
-        //    {
-        //        limitAsInt = 0;
-        //    }
-
-        //    // if parse is greater than 1 million return true
-        //    if (limitAsInt > 1000000)
-        //    {
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //}
     }
 }

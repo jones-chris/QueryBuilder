@@ -70,12 +70,12 @@ namespace QueryBuilder.SqlGenerators
             }
         }
 
-        protected override StringBuilder CreateLimitClause(string limit)
+        protected override StringBuilder CreateLimitClause(int? limit)
         {
             if (limit == null) return null;
 
-            var cleansedLimit = SQLCleanser.EscapeAndRemoveWords(limit);
-            return new StringBuilder(" ROWNUM < " + cleansedLimit).Replace("  ", " ");
+            //var cleansedLimit = SQLCleanser.EscapeAndRemoveWords(limit);
+            return new StringBuilder(" ROWNUM < " + limit).Replace("  ", " ");
         }
 
         protected override StringBuilder CreateOffsetClause(string offset)

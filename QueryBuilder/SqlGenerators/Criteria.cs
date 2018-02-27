@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using QueryBuilder.Config;
 
 namespace QueryBuilder.SqlGenerators
 {
@@ -11,67 +12,50 @@ namespace QueryBuilder.SqlGenerators
     public class Criteria
     {
         private bool _orIsNull;
-        private string _filter;
-        [XmlElement] public string AndOr { get; set; }
-        [XmlElement] public string FrontParenthesis { get; set; }
-        [XmlElement] public string Column { get; set; }
-        [XmlElement] public string Operator { get; set; }
-        [XmlElement] public string Filter
-        {
-            get { return _filter; }
-            set
-            {
-                _filter = value;
-            }
-        }
-        [XmlElement] public string EndParenthesis { get; set; }
-        [XmlElement] public bool OrIsNull
+        [XmlElement]
+        public Conjunction? AndOr { get; set; }
+        [XmlElement]
+        public Parenthesis? FrontParenthesis { get; set; }
+        [XmlElement]
+        public string Column { get; set; }
+        [XmlElement]
+        public Operator? Operator { get; set; }
+        [XmlElement]
+        public string Filter { get; set; }
+        [XmlElement]
+        public Parenthesis? EndParenthesis { get; set; }
+        [XmlElement]
+        public bool OrIsNull
         {
             get { return _orIsNull; }
             set
             {
-                FrontParenthesis = "(";
+                FrontParenthesis = Parenthesis.BeginningParenthesis;
                 _orIsNull = value;
-                EndParenthesis = ")";
+                EndParenthesis = Parenthesis.EndingParenthesis;
             }
-        }
-
-        public enum Operators
-        {
-            Equals,
-            NotEquals,
-            GreaterThanOrEquals,
-            LessThanOrEquals,
-            GreaterThan,
-            LessThan,
-            Like,
-            NotLike,
-            In,
-            NotIn,
-            IsNull,
-            IsNotNull
         }
 
         public Criteria()
         {
-            AndOr = "";
-            FrontParenthesis = "";
-            Column = "";
-            Operator = "";
-            Filter = "";
-            EndParenthesis = "";
+            //AndOr = null;
+            //FrontParenthesis = null;
+            //Column = null;
+            //Operator = null;
+            //Filter = null;
+            //EndParenthesis = null;
         }
 
-        public Criteria(string AndOr = "", string FrontParenthesis = "", string Column = "", 
-            string Operator = "", string Filter = "", string EndParenthesis = "", bool Locked = false)
-        {
-            this.AndOr = AndOr;
-            this.FrontParenthesis = FrontParenthesis;
-            this.Column = Column;
-            this.Operator = Operator;
-            this.Filter = Filter;
-            this.EndParenthesis = EndParenthesis;
-        }
+        //public Criteria(Conjunctions? AndOr = null, string FrontParenthesis = "", string Column = "", 
+        //    string Operator = "", string Filter = "", string EndParenthesis = "", bool Locked = false)
+        //{
+        //    this.AndOr = AndOr;
+        //    this.FrontParenthesis = FrontParenthesis;
+        //    this.Column = Column;
+        //    this.Operator = Operator;
+        //    this.Filter = Filter;
+        //    this.EndParenthesis = EndParenthesis;
+        //}
 
         public override bool Equals(object obj)
         {

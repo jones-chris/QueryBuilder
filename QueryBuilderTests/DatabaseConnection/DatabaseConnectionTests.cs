@@ -13,30 +13,36 @@ namespace QueryBuilder.DatabaseConnections.Tests
     [TestClass]
     public class DatabaseConnectionTests
     {
-        public static DatabaseType dbType = DatabaseType.Access;
-        public static string connString = "Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq=C:\\novena\\db_testing\\novena_dev.accdb;";
-        public IDatabaseConnection dbAccess = new DatabaseConnectionFactory().CreateDbConnection(dbType, connString);
+        public static DatabaseType dbType = DatabaseType.PostgreSQL;
+        public static string connString = "Server=localhost;Port=5432;Database=postgres;User Id=postgres;Password=budgeto;";
+        public static IDatabaseConnection dbConnection = new DatabaseConnectionFactory().CreateDbConnection(dbType, connString);
 
         [TestMethod]
-        public void query_Access()
+        public void query_PostgreSQL()
         {
-            var sql = "select top 10 * from cash_contributions_detail;";
+            var sql = "select * from novena.county_spending_detail limit 10;";
 
-            var dt = dbAccess.query(sql);
+            var dt = dbConnection.query(sql);
 
             Assert.IsTrue(dt.Rows.Count == 10);
         }
 
         [TestMethod]
-        public void userSignInTest()
+        public void userSignIn_PostgreSQL()
         {
-            Assert.Fail();
+            dbConnection.userSignIn();
+
+            Assert.IsTrue(true); // This will pass the test if no exception is thrown before this line.
         }
 
         [TestMethod]
-        public void getSchemaTest()
+        public void getSchema_PostgreSQL()
         {
-            Assert.Fail();
+            var table = "county_spending_detail";
+
+            var dt = dbConnection.getSchema(table);
+
+            Assert.IsTrue(dt.Rows.Count > 0);
         }
     }
 }

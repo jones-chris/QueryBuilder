@@ -79,13 +79,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\Conjunction.cs" />
     <Compile Include="Config\DatabaseConnectionFactory.cs" />
     <Compile Include="Config\DatabaseType.cs" />
+    <Compile Include="Config\Operator.cs" />
+    <Compile Include="Config\Parenthesis.cs" />
     <Compile Include="Config\SqlGeneratorFactory.cs" />
     <Compile Include="DatabaseConnection\DatabaseConnection.cs" />
     <Compile Include="DatabaseConnection\IDatabaseConnection.cs" />
     <Compile Include="Exceptions\BadSQLException.cs" />
     <Compile Include="Exceptions\DatabaseTypeNotRecognizedException.cs" />
+    <Compile Include="Exceptions\FragmentNotFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlGenerators\AccessSqlGenerator.cs" />
     <Compile Include="SqlGenerators\BaseSqlGenerator.cs" />
@@ -98,6 +102,8 @@
     <Compile Include="SqlGenerators\SQLCleanser.cs" />
     <Compile Include="SqlGenerators\SqliteSqlGenerator.cs" />
     <Compile Include="SqlGenerators\SqlServerSqlGenerator.cs" />
+    <Compile Include="Utilities\Interpolator.cs" />
+    <Compile Include="Utilities\Utility.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

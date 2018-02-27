@@ -62,7 +62,7 @@ public abstract class BaseSqlGenerator
             // the WHERE keyword in the generated SQL statement.
             if (!suppressNulls)
             {
-                criteria.First().AndOr = "";
+                criteria.First().AndOr = null;
             }
 
             //for each row
@@ -94,7 +94,7 @@ public abstract class BaseSqlGenerator
                     {
                         var shouldHaveQuotes = IsColumnQuoted(columnDataType);
 
-                        if (theCriteria.Operator == "In" || theCriteria.Operator == "Not In")
+                        if (theCriteria.Operator == Operator.In || theCriteria.Operator == Operator.NotIn)
                         {
                             var originalFilters = theCriteria.Filter.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                             var newFilters = new string[originalFilters.Count()];
@@ -172,12 +172,12 @@ public abstract class BaseSqlGenerator
         return null;
     }
 
-    protected virtual StringBuilder CreateLimitClause(string limit)
+    protected virtual StringBuilder CreateLimitClause(int? limit)
     {
         if (limit == null) return null;
 
-        var cleansedLimit = SQLCleanser.EscapeAndRemoveWords(limit);
-        return (limit == null) ? null : new StringBuilder(" LIMIT " + cleansedLimit).Replace("  ", " ");
+        //var cleansedLimit = SQLCleanser.EscapeAndRemoveWords(limit);
+        return (limit == null) ? null : new StringBuilder(" LIMIT " + limit).Replace("  ", " ");
     }
 
     protected virtual StringBuilder CreateOffsetClause(string offset)
