@@ -13,7 +13,7 @@ namespace QueryBuilder.SqlGenerators
         private string _sql;
         public DataTable TableSchema { get; private set; }
         public bool Distinct { get; private set; }
-        public List<string> Columns { get; private set; }
+        public IList<string> Columns { get; private set; }
         public string Table { get; private set; }
         public List<Criteria> Criteria { get; private set; }
         public bool GroupBy { get; private set; }
@@ -54,7 +54,7 @@ namespace QueryBuilder.SqlGenerators
             return this;
         }
 
-        public Query SetColumns(List<string> columns)
+        public Query SetColumns(IList<string> columns)
         {
             Columns = columns;
             return this;

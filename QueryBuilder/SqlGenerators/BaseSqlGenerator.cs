@@ -23,7 +23,7 @@ public abstract class BaseSqlGenerator
 
     public abstract string CreateSql(Query query);
 
-    protected virtual StringBuilder CreateSELECTClause(bool distinct, List<string> columns)
+    protected virtual StringBuilder CreateSELECTClause(bool distinct, IList<string> columns)
     {
         if (columns == null) return null;
 
@@ -46,7 +46,7 @@ public abstract class BaseSqlGenerator
         return sql.Replace("  ", " ");
     }
 
-    protected virtual StringBuilder CreateWHEREClause(List<Criteria> criteria, List<string> columns, bool suppressNulls)
+    protected virtual StringBuilder CreateWHEREClause(IList<Criteria> criteria, IList<string> columns, bool suppressNulls)
     {
         StringBuilder sql = new StringBuilder(" WHERE ");
         if (suppressNulls)
@@ -138,7 +138,7 @@ public abstract class BaseSqlGenerator
         return sql.Replace("  ", " ");
     }
 
-    protected virtual StringBuilder CreateGROUPBYCluase(bool groupBy, List<string> columns)
+    protected virtual StringBuilder CreateGROUPBYCluase(bool groupBy, IList<string> columns)
     {
         if (groupBy == false) return null;
 
@@ -155,7 +155,7 @@ public abstract class BaseSqlGenerator
         return null;
     }
 
-    protected virtual StringBuilder CreateORDERBYCluase(bool orderBy, List<string> columns, bool asc)
+    protected virtual StringBuilder CreateORDERBYCluase(bool orderBy, IList<string> columns, bool asc)
     {
         if (orderBy == false) return null;
 
@@ -188,7 +188,7 @@ public abstract class BaseSqlGenerator
         return (offset == null) ? null : new StringBuilder(" OFFSET " + cleansedOffset).Replace("  ", " ");
     }
 
-    public virtual StringBuilder CreateSuprressNullsClause(List<string> columns)
+    public virtual StringBuilder CreateSuprressNullsClause(IList<string> columns)
     {
         if (columns == null) return null;
 
