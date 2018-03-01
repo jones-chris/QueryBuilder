@@ -89,6 +89,7 @@
     <Compile Include="DatabaseConnection\IDatabaseConnection.cs" />
     <Compile Include="Exceptions\BadSQLException.cs" />
     <Compile Include="Exceptions\DatabaseTypeNotRecognizedException.cs" />
+    <Compile Include="Exceptions\EmptyCollectionException.cs" />
     <Compile Include="Exceptions\FragmentNotFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlGenerators\AccessSqlGenerator.cs" />

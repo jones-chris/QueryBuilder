@@ -25,7 +25,9 @@ public abstract class BaseSqlGenerator
 
     protected virtual StringBuilder CreateSELECTClause(bool distinct, IList<string> columns)
     {
-        if (columns == null) return null;
+        if (columns == null) throw new ArgumentNullException();
+
+        if (columns.Count == 0) throw new EmptyCollectionException();
 
         string startSql = (distinct == true) ? "SELECT DISTINCT " : "SELECT ";
         StringBuilder sql = new StringBuilder(startSql);
@@ -39,7 +41,9 @@ public abstract class BaseSqlGenerator
 
     protected virtual StringBuilder CreateFROMClause(string table)
     {
-        if (table == null) return null;
+        if (table == null) throw new ArgumentNullException();
+
+        if (table == string.Empty) throw new ArgumentException("The table argument is an empty string");
 
         string s = string.Format(" FROM {0}{1}{2} ", openingColumnMark, SQLCleanser.EscapeAndRemoveWords(table), closingColumnMark);
         StringBuilder sql = new StringBuilder(s);

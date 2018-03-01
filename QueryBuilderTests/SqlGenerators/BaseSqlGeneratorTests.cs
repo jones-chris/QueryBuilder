@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Rhino.Mocks;
+using QueryBuilder.Exceptions;
 
 namespace QueryBuilder.SqlGenerators.Tests
 {
@@ -27,6 +28,10 @@ namespace QueryBuilder.SqlGenerators.Tests
         {
             throw new NotImplementedException();
         }
+
+        //==========================================================================================
+        // CreateSELECTClause Tests
+        //==========================================================================================
 
         [TestMethod]
         public void CreateSELECTClause_NotDistinctAndMulitpleColumns()
@@ -62,6 +67,116 @@ namespace QueryBuilder.SqlGenerators.Tests
             Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
         }
 
+        [TestMethod]
+        public void CreateSELECTClause_DistinctAndSingleColumn()
+        {
+            var column = new List<string>() { "service" };
+            var expectedSQL = "SELECT DISTINCT `service` ";
+
+            var actualSQL = CreateSELECTClause(true, column).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void CreateSELECTClause_DistinctAndNullColumns()
+        {
+            var actualSQL = CreateSELECTClause(true, null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void CreateSELECTClause_NotDistinctAndNullColumns()
+        {
+            var actualSQL = CreateSELECTClause(false, null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EmptyCollectionException))]
+        public void CreateSELECTClause_DistinctAndEmptyColumns()
+        {
+            var columns = new List<string>() { };
+
+            var actualSQL = CreateSELECTClause(true, columns);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EmptyCollectionException))]
+        public void CreateSELECTClause_NotDistinctAndEmptyColumns()
+        {
+            var columns = new List<string>() { };
+
+            var actualSQL = CreateSELECTClause(false, columns);
+        }
+
+        //==========================================================================================
+        // CreateFROMClause Tests
+        //==========================================================================================
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void CreateFROMClause_NullTable()
+        {
+            var actualSQL = CreateFROMClause(null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void CreateFROMClause_EmptyString()
+        {
+            var table = "";
+
+            var actualSQL = CreateFROMClause(table);
+        }
+
+        [TestMethod]
+        public void CreateFROMClause_NonEmptyString()
+        {
+            var table = "county_spending_detail";
+            var expectedSQL = " FROM `county_spending_detail` ";
+
+            var actualSQL = CreateFROMClause(table).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
+
+        //==========================================================================================
+        // CreateWHEREClause Tests
+        //==========================================================================================
+
+
+
+        //==========================================================================================
+        // CreateGROUPBYClause Tests
+        //==========================================================================================
+
+
+        //==========================================================================================
+        // CreateORDERBYClause Tests
+        //==========================================================================================
+
+
+        //==========================================================================================
+        // CreateLIMITClause Tests
+        //==========================================================================================
+
+        //==========================================================================================
+        // CreateOFFSETClause Tests
+        //==========================================================================================
+
+        //==========================================================================================
+        // CreateSuppressNullsClause Tests
+        //==========================================================================================
+
+        /// <summary>
+        /// Check that the strings are the same length.
+        /// </summary>
+        /// <param name="expectedSQL"></param>
+        /// <param name="actualSQL"></param>
+        /// <returns>boolean</returns>
         private bool sqlStringsAreSameLength(string expectedSQL, string actualSQL)
         {
             return expectedSQL.Length == actualSQL.Length;
