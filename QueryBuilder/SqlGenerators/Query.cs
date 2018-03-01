@@ -18,9 +18,9 @@ namespace QueryBuilder.SqlGenerators
         public List<Criteria> Criteria { get; private set; }
         public bool GroupBy { get; private set; }
         public bool OrderBy { get; private set; }
-        public int Limit { get; private set; }
+        public long Limit { get; private set; }
         public bool Ascending { get; private set; }
-        public string Offset { get; private set; }
+        public long Offset { get; private set; }
         public bool SuppressNulls { get; private set; }
 
         public Query(string queryName, string sql = null)
@@ -106,7 +106,7 @@ namespace QueryBuilder.SqlGenerators
             return this;
         }
 
-        public Query SetOffset(string offset)
+        public Query SetOffset(long offset)
         {
             Offset = offset;
             return this;

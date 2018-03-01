@@ -147,29 +147,239 @@ namespace QueryBuilder.SqlGenerators.Tests
         // CreateWHEREClause Tests
         //==========================================================================================
 
+        [TestMethod]
+        public void CreateWHEREClause_NullCriteriaAndColumnsAndDoNotSuppressNulls()
+        {
+            var actualSQL = CreateWHEREClause(null, null, false);
 
+            Assert.IsNull(actualSQL);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void CreateWHEREClause_NullCriteriaAndNoColumnsAndSuppressNulls()
+        {
+            var actualSQL = CreateWHEREClause(null, null, true);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EmptyCollectionException))]
+        public void CreateWHEREClause_NullCriteriaAndEmptyColumnsCollectionAndSuppressNulls()
+        {
+            var actualSQL = CreateWHEREClause(null, new List<string>(), true);
+        }
+
+        [TestMethod]
+        public void CreateWHEREClause_NullCriteriaAndOneColumnAndSuppressNulls()
+        {
+            var expectedSQL = " WHERE (`service` IS NOT NULL ) ";
+
+            var actualSQL = CreateWHEREClause(null, new List<string>() { "service" }, true).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
+
+        [TestMethod]
+        public void CreateWHEREClause_NullCriteriaAndMultipleColumnsAndSuppressNulls()
+        {
+            var expectedSQL = " WHERE (`service` IS NOT NULL OR `fund` IS NOT NULL ) ";
+
+            var actualSQL = CreateWHEREClause(null, new List<string>() { "service", "fund" }, true).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
 
         //==========================================================================================
         // CreateGROUPBYClause Tests
         //==========================================================================================
+
+        [TestMethod]
+        public void CreateGROUPBYClause_GroupByIsFalse()
+        {
+            var actualSQL = CreateGROUPBYCluase(false, null);
+
+            Assert.IsNull(actualSQL);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void CreateGROUPBYClause_NullColumns()
+        {
+            var actualSQL = CreateGROUPBYCluase(true, null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EmptyCollectionException))]
+        public void CreateGROUPBYClause_EmptyColumnsCollection()
+        {
+            var actualSQL = CreateGROUPBYCluase(true, new List<string>());
+        }
+
+        [TestMethod]
+        public void CreateGROUPBYClause_OneColumn()
+        {
+            var expectedSQL = " GROUP BY `service` ";
+
+            var actualSQL = CreateGROUPBYCluase(true, new List<string>() { "service" }).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
+
+        [TestMethod]
+        public void CreateGROUPBYClause_MulitpleColumns()
+        {
+            var expectedSQL = " GROUP BY `service`, `fund` ";
+
+            var actualSQL = CreateGROUPBYCluase(true, new List<string>() { "service", "fund" }).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
 
 
         //==========================================================================================
         // CreateORDERBYClause Tests
         //==========================================================================================
 
+        [TestMethod]
+        public void CreateORDERBYClause_OrderByIsFalse()
+        {
+            var actualSQL = CreateORDERBYCluase(false, null, false);
+
+            Assert.IsNull(actualSQL);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void CreateORDERBYClause_NullColumns()
+        {
+            var actualSQL = CreateORDERBYCluase(true, null, false);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EmptyCollectionException))]
+        public void CreateORDERBYClause_EmptyColumnsCollection()
+        {
+            var actualSQL = CreateORDERBYCluase(true, new List<string>(), false);
+        }
+
+        [TestMethod]
+        public void CreateORDERBYClause_OneColumn()
+        {
+            var expectedSQL = " ORDER BY `service` DESC ";
+
+            var actualSQL = CreateORDERBYCluase(true, new List<string>() { "service" }, false).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
+
+        [TestMethod]
+        public void CreateORDERBYClause_MulitpleColumns()
+        {
+            var expectedSQL = " ORDER BY `service`, `fund` DESC ";
+
+            var actualSQL = CreateORDERBYCluase(true, new List<string>() { "service", "fund" }, false).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
+
+        [TestMethod]
+        public void CreateORDERBYClause_MulitpleColumnsWithASC()
+        {
+            var expectedSQL = " ORDER BY `service`, `fund` ASC ";
+
+            var actualSQL = CreateORDERBYCluase(true, new List<string>() { "service", "fund" }, true).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
 
         //==========================================================================================
         // CreateLIMITClause Tests
         //==========================================================================================
 
+        [TestMethod]
+        public void CreateLIMITClause_NullLimit()
+        {
+            Assert.IsNull(CreateLimitClause(null));
+        }
+
+        [TestMethod]
+        public void CreateLIMITClause_NonNullLimit()
+        {
+            var expectedSQL = " LIMIT 100 ";
+
+            var actualSQL = CreateLimitClause(100).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
+
         //==========================================================================================
         // CreateOFFSETClause Tests
         //==========================================================================================
 
+        [TestMethod]
+        public void CreateOFFSETClause_NullOffset()
+        {
+            Assert.IsNull(CreateOffsetClause(null));
+        }
+
+        [TestMethod]
+        public void CreateOFFSETClause_NonNullOffset()
+        {
+            var expectedSQL = " OFFSET 100 ";
+
+            var actualSQL = CreateOffsetClause(100).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
+
         //==========================================================================================
         // CreateSuppressNullsClause Tests
         //==========================================================================================
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void CreateSuppressNullsClause_NullColumns()
+        {
+            Assert.IsNull(CreateSuprressNullsClause(null));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EmptyCollectionException))]
+        public void CreateSuppressNullsClause_EmptyColumnsCollection()
+        {
+            var actualSQL = CreateSuprressNullsClause(new List<string>());
+        }
+
+        [TestMethod]
+        public void CreateSuppressNullsClause_OneColumn()
+        {
+            var expectedSQL = " (`service` IS NOT NULL ) ";
+
+            var actualSQL = CreateSuprressNullsClause(new List<string>() { "service" }).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
+
+        [TestMethod]
+        public void CreateSuppressNullsClause_MulitpleColumns()
+        {
+            var expectedSQL = " (`service` IS NOT NULL  OR `fund` IS NOT NULL ) ";
+
+            var actualSQL = CreateSuprressNullsClause(new List<string>() { "service", "fund" }).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
 
         /// <summary>
         /// Check that the strings are the same length.

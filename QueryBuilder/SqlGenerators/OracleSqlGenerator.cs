@@ -70,7 +70,7 @@ namespace QueryBuilder.SqlGenerators
             }
         }
 
-        protected override StringBuilder CreateLimitClause(int? limit)
+        protected override StringBuilder CreateLimitClause(long? limit)
         {
             if (limit == null) return null;
 
@@ -78,12 +78,9 @@ namespace QueryBuilder.SqlGenerators
             return new StringBuilder(" ROWNUM < " + limit).Replace("  ", " ");
         }
 
-        protected override StringBuilder CreateOffsetClause(string offset)
+        protected override StringBuilder CreateOffsetClause(long? offset)
         {
-            if (offset == null) return null;
-
-            var cleansedOffset = SQLCleanser.EscapeAndRemoveWords(offset);
-            return new StringBuilder(" OFFSET " + cleansedOffset + " ROWS").Replace("  ", " ");
+            return new StringBuilder(" OFFSET " + offset + " ROWS").Replace("  ", " ");
         }
     }
 }

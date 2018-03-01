@@ -52,9 +52,16 @@ public abstract class BaseSqlGenerator
 
     protected virtual StringBuilder CreateWHEREClause(IList<Criteria> criteria, IList<string> columns, bool suppressNulls)
     {
+        if (criteria == null && columns == null && suppressNulls == false)
+        {
+            return null;
+        }
+
         StringBuilder sql = new StringBuilder(" WHERE ");
         if (suppressNulls)
         {
+            if (columns == null) throw new ArgumentNullException();
+            if (columns.Count == 0) throw new EmptyCollectionException();
             sql.Append(CreateSuprressNullsClause(columns));
         }
 
@@ -146,7 +153,13 @@ public abstract class BaseSqlGenerator
     {
         if (groupBy == false) return null;
 
-        if (columns.Count > 0)
+        if (columns == null) throw new ArgumentNullException();
+
+        if (columns.Count == 0)
+        {
+            throw new EmptyCollectionException();
+        }
+        else
         {
             StringBuilder sql = new StringBuilder(" GROUP BY ");
             foreach (string column in columns)
@@ -156,14 +169,19 @@ public abstract class BaseSqlGenerator
             sql.Remove(sql.Length - 2, 2).Append(" ");
             return sql.Replace("  ", " ");
         }
-        return null;
     }
 
     protected virtual StringBuilder CreateORDERBYCluase(bool orderBy, IList<string> columns, bool asc)
     {
         if (orderBy == false) return null;
 
-        if (columns.Count > 0)
+        if (columns == null) throw new ArgumentNullException();
+
+        if (columns.Count == 0)
+        {
+            throw new EmptyCollectionException();
+        }
+        else 
         {
             StringBuilder sql = new StringBuilder(" ORDER BY ");
             foreach (string column in columns)
@@ -173,46 +191,42 @@ public abstract class BaseSqlGenerator
             sql.Remove(sql.Length - 2, 2).Append(" ");
             return (asc == true) ? sql.Append(" ASC ").Replace("  ", " ") : sql.Append(" DESC ").Replace("  ", " ");
         }
-        return null;
     }
 
-    protected virtual StringBuilder CreateLimitClause(int? limit)
+    protected virtual StringBuilder CreateLimitClause(long? limit)
     {
-        if (limit == null) return null;
-
-        //var cleansedLimit = SQLCleanser.EscapeAndRemoveWords(limit);
-        return (limit == null) ? null : new StringBuilder(" LIMIT " + limit).Replace("  ", " ");
+        return (limit == null) ? null : new StringBuilder($" LIMIT {limit} ").Replace("  ", " ");
     }
 
-    protected virtual StringBuilder CreateOffsetClause(string offset)
+    protected virtual StringBuilder CreateOffsetClause(long? offset)
     {
-        if (offset == null) return null;
-
-        var cleansedOffset = SQLCleanser.EscapeAndRemoveWords(offset);
-        return (offset == null) ? null : new StringBuilder(" OFFSET " + cleansedOffset).Replace("  ", " ");
+        return (offset == null) ? null : new StringBuilder($" OFFSET {offset} ").Replace("  ", " ");
     }
 
     public virtual StringBuilder CreateSuprressNullsClause(IList<string> columns)
     {
-        if (columns == null) return null;
+        if (columns == null) throw new ArgumentNullException();
 
-        StringBuilder sql = new StringBuilder();
-        if (columns.Count > 0)
+        if (columns.Count == 0)
         {
+            throw new EmptyCollectionException();
+        } 
+        else
+        {
+            StringBuilder sql = new StringBuilder();
             for (var i = 0; i < columns.Count; i++)
             {
                 if (i == 0)
                 {
-                    sql.Append($" ({columns[i]} IS NOT NULL ");
+                    sql.Append($" ({openingColumnMark}{columns[i]}{closingColumnMark} IS NOT NULL ");
                 }
                 else
                 {
-                    sql.Append($" OR {columns[i]} IS NOT NULL ");
+                    sql.Append($" OR {openingColumnMark}{columns[i]}{closingColumnMark} IS NOT NULL ");
                 }
             }
+            return sql.Append(") ");
         }
-
-        return sql.Append(")");
     }
 
     private string GetColumnDataType(string columnName)
