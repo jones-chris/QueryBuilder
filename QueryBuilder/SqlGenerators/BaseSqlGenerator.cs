@@ -67,7 +67,11 @@ public abstract class BaseSqlGenerator
 
         if (criteria == null) return sql.Replace("  ", " ");
 
-        if (criteria.Count > 0)
+        if (criteria.Count == 0)
+        {
+            throw new EmptyCollectionException();
+        }
+        else
         {
             // If nulls are not being suppressed, then the first Criteria's AndOr property is not needed since it's coming directly after
             // the WHERE keyword in the generated SQL statement.
@@ -81,24 +85,31 @@ public abstract class BaseSqlGenerator
             {
                 if (!CriteriaHasNullValues(theCriteria))
                 {
-                    //sql.Append(theCriteria.AndOr == null ? null : $" {theCriteria.AndOr} ");
-                    //sql.Append(theCriteria.FrontParenthesis == null ? null : $" {theCriteria.FrontParenthesis} ");
-                    //sql.Append(theCriteria.Column == null ? null : $" {openingColumnMark}{theCriteria.Column}{closingColumnMark} ");
-                    //sql.Append(theCriteria.Operator == null ? null : $" {theCriteria.Operator} ");
-                    //sql.Append(theCriteria.EndParenthesis == null ? null : $" {theCriteria.EndParenthesis} ");
+                    if (theCriteria.Operator == Operator.IsNull || theCriteria.Operator == Operator.IsNotNull)
+                    {
+                        sql.Append($" {theCriteria.ToString()} ");
+                        continue;
+                    }
 
-                    // determine if Criteria's filter property is a subquery
+                    if (theCriteria.Filter == null || theCriteria.Filter == string.Empty)
+                    {
+                        throw new Exception("A criteria has a null or empty filter, but the operator is not 'IsNull' or 'IsNotNull'");
+                    }
+                        
+                    // determine if Criteria's filter property is a subquery.  We have tested that the filter property is not null
+                    // or an empty string.
                     if (IsSubQuery(theCriteria.Filter))
                     {
                         theCriteria.Filter = SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter);
                         sql.Append($" ({theCriteria.ToString()}) ");
+                        continue;
                     }
 
                     // if not subquery, then determine if column needs quotes or not
                     var columnDataType = GetColumnDataType(theCriteria.Column);
                     if (columnDataType == null)
                     {
-                        // if the column name cannot be found in the table schema datatable, then throw BadSQLException
+                        // if the column name cannot be found in the table schema datatable, then throw Exception
                         throw new Exception(string.Format($"Could not find column name, {theCriteria.Column}, in table schema for {tableSchema.TableName}"));
                     }
                     else
@@ -146,7 +157,6 @@ public abstract class BaseSqlGenerator
 
             return sql.Replace("  ", " ");
         }
-        return sql.Replace("  ", " ");
     }
 
     protected virtual StringBuilder CreateGROUPBYCluase(bool groupBy, IList<string> columns)
@@ -319,7 +329,7 @@ public abstract class BaseSqlGenerator
     {
         // Test each criteria's Column, Operator, and Filter properties.  If any criteria in list is null, then return true.
         if (criteria.Column == null) return true;
-        //if (criteria.Operator == null) return true;
+        if (criteria.Operator == null) return true;
         //if (criteria.Filter == null) return true;
            
         return false;
