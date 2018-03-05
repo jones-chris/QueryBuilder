@@ -32,7 +32,7 @@ namespace QueryBuilder.SqlGenerators.Tests
             criteria2.AndOr = Conjunction.And;
             criteria2.Column = "service";
             criteria2.Operator = Operator.In;
-            criteria2.Filter = "service1,serivce2";
+            criteria2.Filter = "service1,service2";
 
             multipleCriteria.Add(criteria1);
             multipleCriteria.Add(criteria2);
@@ -278,6 +278,17 @@ namespace QueryBuilder.SqlGenerators.Tests
             criteria1.Column = "this_column_will_not_be_found";
 
             var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria1 }, null, false);
+        }
+
+        [TestMethod]
+        public void CreateWHEREClause_ColumnShouldHaveQuotesAndHasInOperator()
+        {
+            var expectedSQL = " WHERE  service In ('service1','service2') ";
+
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria2 }, null, false).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
         }
 
         //==========================================================================================
