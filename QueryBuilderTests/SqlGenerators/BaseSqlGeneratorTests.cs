@@ -24,6 +24,34 @@ namespace QueryBuilder.SqlGenerators.Tests
         
         static BaseSqlGeneratorTests()
         {
+            //criteria1.AndOr = Conjunction.And;
+            //criteria1.Column = "fund";
+            //criteria1.Operator = Operator.EqualTo;
+            //criteria1.Filter = "fund1";
+
+            //criteria2.AndOr = Conjunction.And;
+            //criteria2.Column = "service";
+            //criteria2.Operator = Operator.In;
+            //criteria2.Filter = "service1,service2";
+
+            //multipleCriteria.Add(criteria1);
+            //multipleCriteria.Add(criteria2);
+        }
+
+        public BaseSqlGeneratorTests()
+        {
+            tableSchema = TestUtil.MultiColumnDataTableBuilder();
+
+            typeMappings.Add("text", true);
+            typeMappings.Add("int2", false);
+        }
+
+        [TestInitialize]
+        public void RunBeforeEachTest()
+        {
+            base.openingColumnMark = '`';
+            base.closingColumnMark = '`';
+
             criteria1.AndOr = Conjunction.And;
             criteria1.Column = "fund";
             criteria1.Operator = Operator.EqualTo;
@@ -36,18 +64,6 @@ namespace QueryBuilder.SqlGenerators.Tests
 
             multipleCriteria.Add(criteria1);
             multipleCriteria.Add(criteria2);
-        }
-
-        public BaseSqlGeneratorTests()
-        {
-            tableSchema = TestUtil.MultiColumnDataTableBuilder();
-        }
-
-        [TestInitialize]
-        public void RunBeforeEachTest()
-        {
-            base.openingColumnMark = '`';
-            base.closingColumnMark = '`';
         }
 
         public override string CreateSql(Query query)
@@ -275,9 +291,13 @@ namespace QueryBuilder.SqlGenerators.Tests
         [ExpectedException(typeof(Exception))]
         public void CreateWHEREClause_CannotFindColumnDataTypeThrowsException()
         {
-            criteria1.Column = "this_column_will_not_be_found";
-
-            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria1 }, null, false);
+            var criteria = new Criteria();
+            criteria.AndOr = Conjunction.And;
+            criteria.Column = "this_column_will_not_be_found";
+            criteria.Operator = Operator.GreaterThan;
+            criteria.Filter = "a column";
+            
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria }, null, false);
         }
 
         [TestMethod]
@@ -286,6 +306,49 @@ namespace QueryBuilder.SqlGenerators.Tests
             var expectedSQL = " WHERE  service In ('service1','service2') ";
 
             var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria2 }, null, false).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
+
+        [TestMethod]
+        public void CreateWHEREClause_ColumnShouldNotHaveQuotesAndHasInOperator()
+        {
+            var criteria = new Criteria();
+            criteria.AndOr = Conjunction.And;
+            criteria.Column = "account";
+            criteria.Operator = Operator.In;
+            criteria.Filter = "account1,account2";
+            var expectedSQL = " WHERE  account In (account1,account2) ";
+
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria }, null, false).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
+
+        [TestMethod]
+        public void CreateWHEREClause_ColumnShouldHaveQuotesAndHasEqualToOperator()
+        {
+            var expectedSQL = " WHERE  fund = 'fund1'  ";
+
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria1 }, null, false).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
+
+        [TestMethod]
+        public void CreateWHEREClause_ColumnShouldHaveNotQuotesAndHasEqualToOperator()
+        {
+            var criteria = new Criteria();
+            criteria.AndOr = Conjunction.And;
+            criteria.Column = "account";
+            criteria.Operator = Operator.EqualTo;
+            criteria.Filter = "123";
+            var expectedSQL = " WHERE  account = 123  ";
+
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria }, null, false).ToString();
 
             Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
             Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
