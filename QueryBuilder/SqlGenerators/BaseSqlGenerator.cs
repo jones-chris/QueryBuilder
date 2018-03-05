@@ -50,54 +50,42 @@ public abstract class BaseSqlGenerator
         return sql.Replace("  ", " ");
     }
 
-    protected virtual StringBuilder CreateWHEREClause(IList<Criteria> criteria, IList<string> columns, bool suppressNulls)
+    protected virtual StringBuilder CreateWHEREClause(IList<Criteria> criteria)
     {
-        if (criteria == null && columns == null && suppressNulls == false)
+        if (criteria == null)
         {
             return null;
         }
 
-        StringBuilder sql = new StringBuilder(" WHERE ");
-        if (suppressNulls)
-        {
-            if (columns == null) throw new ArgumentNullException();
-            if (columns.Count == 0) throw new EmptyCollectionException();
-            sql.Append(CreateSuprressNullsClause(columns));
-        }
-
-        if (criteria == null) return sql.Replace("  ", " ");
-
         if (criteria.Count == 0)
         {
-            throw new EmptyCollectionException();
+            return null;
         }
         else
         {
-            // If nulls are not being suppressed, then the first Criteria's AndOr property is not needed since it's coming directly after
-            // the WHERE keyword in the generated SQL statement.
-            if (!suppressNulls)
-            {
-                criteria.First().AndOr = null;
-            }
+            // First criteria's AndOr property is not needed since it's coming directly after the WHERE keyword in the SQL statement.
+            criteria.First().AndOr = null;
 
-            //for each row
+            StringBuilder sql = new StringBuilder(" WHERE ");
+
             foreach (var theCriteria in criteria)
             {
-                if (!CriteriaHasNullColumnOrOperator(theCriteria))
+                if (! CriteriaHasNullColumnOrOperator(theCriteria))
                 {
+                    // If Operator is "Is Null" or "Is Not Null".
                     if (theCriteria.Operator == Operator.IsNull || theCriteria.Operator == Operator.IsNotNull)
                     {
                         sql.Append($" {theCriteria.ToString()} ");
                         continue;
                     }
 
+                    // Now that we know that the operator is something other than "Is Null or "Is Not Null", we need to check that the Filter is not null or an empty string.
                     if (theCriteria.Filter == null || theCriteria.Filter == string.Empty)
                     {
                         throw new Exception("A criteria has a null or empty filter, but the operator is not 'IsNull' or 'IsNotNull'");
                     }
                         
-                    // determine if Criteria's filter property is a subquery.  We have tested that the filter property is not null
-                    // or an empty string.
+                    // Now that we know that the Filter is not null or an empty string, test if the filter is a subquery.
                     if (theCriteria.FilterIsSubQuery())
                     {
                         theCriteria.Filter = SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter);
@@ -105,21 +93,24 @@ public abstract class BaseSqlGenerator
                         continue;
                     }
 
-                    // if not subquery, then determine if column needs quotes or not
+                    // If the filter is not a subquery, then determine if the filter needs quotes or not (quotes if it's text based, no quotes if it's number based).
                     var columnDataType = GetColumnDataType(theCriteria.Column);
                     if (columnDataType == null)
                     {
-                        // if the column name cannot be found in the table schema datatable, then throw Exception
+                        // If the column name cannot be found in the table schema datatable, then throw Exception
                         throw new Exception(string.Format($"Could not find column name, {theCriteria.Column}, in table schema for {tableSchema.TableName}"));
                     }
                     else
                     {
                         var shouldHaveQuotes = IsColumnQuoted(columnDataType);
 
+                        // If the operator is "In" or "Not In".
                         if (theCriteria.Operator == Operator.In || theCriteria.Operator == Operator.NotIn)
                         {
                             var originalFilters = theCriteria.Filter.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                             var newFilters = new string[originalFilters.Count()];
+
+                            // If the filter should have quotes.
                             if (shouldHaveQuotes)
                             {
                                 for (var i = 0; i < originalFilters.Count(); i++)
@@ -129,12 +120,14 @@ public abstract class BaseSqlGenerator
                                 theCriteria.Filter = "(" + string.Join(",", newFilters) + ")";
                                 sql.Append($" {theCriteria.ToString()} ");
                             }
+                            //If the filter should NOT have quotes.
                             else
                             {
                                 theCriteria.Filter = "(" + SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter) + ")";
                                 sql.Append($" {theCriteria.ToString()} ");
                             }
                         }
+                        // If the operator is anything other than "In" or "Not In" (and not "Is Null" or "Is Not Null" because that test is done earlier in the method).
                         else
                         {
                             var cleansedValue = SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter);
@@ -146,8 +139,8 @@ public abstract class BaseSqlGenerator
                 else
                 {
                     throw new BadSQLException("One or more of the criteria in the Criteria list has a " +
-                                               "null value for it's Column and/or operator.  Please make sure each criteria has " +
-                                               "has a non-null value for each of these properties");
+                                              "null value for it's Column and/or operator.  Please make sure each criteria has " +
+                                              "has a non-null value for each of these properties");
                 }
             }
 
@@ -243,7 +236,7 @@ public abstract class BaseSqlGenerator
 
         if (columnInfo.Count() == 1)
         {
-            return (string)columnInfo.ElementAt(0)["data_type"]; //11
+            return (string)columnInfo.ElementAt(0)["data_type"]; 
         }
         else
         {
@@ -267,63 +260,9 @@ public abstract class BaseSqlGenerator
         }
     }
 
-    //private bool IsSubQuery(string filter)
-    //{
-    //    if (filter.Length >= 6)
-    //    {
-    //        return (filter.Substring(0, 6).ToLower() == "select") ? true : false;
-    //    }
-    //    return false;
-    //}
-
-    //private IList<Criteria> AddParenthesisToCriteria(IList<Criteria> criteria)
-    //{
-    //    // If there is only one or zero items in criteria list, then just return criteria unaltered.
-    //    if (criteria.Count <= 1)
-    //    {
-    //        return criteria;
-    //    }
-
-    //    for (var i = 0; i < criteria.Count; i++)
-    //    {
-    //        var currentColumn = criteria[i].Column;
-    //        string priorColumn;
-    //        string nextColumn;
-
-    //        // If first criteria in list
-    //        if (i == 0)
-    //        {
-    //            nextColumn = criteria[i + 1].Column;
-    //            if (currentColumn == nextColumn) { criteria[i].FrontParenthesis = "("; }
-    //        }
-    //        // If last criteria in list
-    //        else if (i == criteria.Count - 1)
-    //        {
-    //            priorColumn = criteria[i - 1].Column;
-    //            if (currentColumn == priorColumn) { criteria[i].EndParenthesis = ")"; }
-    //        }
-    //        // If criteria is neither the first or last
-    //        else
-    //        {
-    //            priorColumn = criteria[i - 1].Column;
-    //            nextColumn = criteria[i + 1].Column;
-    //            if (currentColumn != priorColumn && currentColumn == nextColumn)
-    //            {
-    //                criteria[i].FrontParenthesis = "(";
-    //            }
-    //            else if (currentColumn == priorColumn && currentColumn != nextColumn)
-    //            {
-    //                criteria[i].EndParenthesis = ")";
-    //            }
-    //        }
-    //    }
-
-    //    return criteria;
-    //}
-
     private bool CriteriaHasNullColumnOrOperator(Criteria criteria)
     {
-        // Test each criteria's Column, Operator, and Filter properties.  If any criteria in list is null, then return true.
+        // Test each criteria's Column and Operator properties.  If any criteria in list is null, then return true.
         if (criteria.Column == null) return true;
         if (criteria.Operator == null) return true;
         //if (criteria.Filter == null) return true;

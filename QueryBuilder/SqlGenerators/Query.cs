@@ -89,7 +89,7 @@ namespace QueryBuilder.SqlGenerators
         /// </summary>
         /// <param name="limit"></param>
         /// <returns>Query</returns>
-        public Query SetLimit(int limit)
+        public Query SetLimit(long limit)
         {
             Limit = limit;
             return this;

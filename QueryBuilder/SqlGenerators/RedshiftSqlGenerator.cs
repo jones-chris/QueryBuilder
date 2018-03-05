@@ -46,7 +46,23 @@ namespace QueryBuilder.SqlGenerators
                 StringBuilder sql = new StringBuilder("");
                 sql.Append(CreateSELECTClause(query.Distinct, query.Columns));
                 sql.Append(CreateFROMClause(query.Table));
-                sql.Append(CreateWHEREClause(query.Criteria, query.Columns, query.SuppressNulls));
+                sql.Append(CreateWHEREClause(query.Criteria));
+
+                if (sql.ToString().Contains(" WHERE "))
+                {
+                    if (query.SuppressNulls)
+                    {
+                        sql.Append(" AND " + CreateSuprressNullsClause(query.Columns));
+                    }
+                }
+                else
+                {
+                    if (query.SuppressNulls)
+                    {
+                        sql.Append(" WHERE " + CreateSuprressNullsClause(query.Columns));
+                    }
+                }
+
                 sql.Append(CreateGROUPBYCluase(query.GroupBy, query.Columns));
                 sql.Append(CreateORDERBYCluase(query.OrderBy, query.Columns, query.Ascending));
                 sql.Append(CreateLimitClause(query.Limit));

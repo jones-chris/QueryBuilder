@@ -24,18 +24,6 @@ namespace QueryBuilder.SqlGenerators.Tests
         
         static BaseSqlGeneratorTests()
         {
-            //criteria1.AndOr = Conjunction.And;
-            //criteria1.Column = "fund";
-            //criteria1.Operator = Operator.EqualTo;
-            //criteria1.Filter = "fund1";
-
-            //criteria2.AndOr = Conjunction.And;
-            //criteria2.Column = "service";
-            //criteria2.Operator = Operator.In;
-            //criteria2.Filter = "service1,service2";
-
-            //multipleCriteria.Add(criteria1);
-            //multipleCriteria.Add(criteria2);
         }
 
         public BaseSqlGeneratorTests()
@@ -68,6 +56,7 @@ namespace QueryBuilder.SqlGenerators.Tests
             multipleCriteria.Add(criteria2);
         }
 
+        // I need this method because this test class is extending BaseSqlGenerator.  This method is not intended to be tested in this test class.
         public override string CreateSql(Query query)
         {
             throw new NotImplementedException();
@@ -192,67 +181,59 @@ namespace QueryBuilder.SqlGenerators.Tests
         //==========================================================================================
 
         [TestMethod]
-        public void CreateWHEREClause_NullCriteriaAndColumnsAndDoNotSuppressNulls()
+        public void CreateWHEREClause_NullCriteria()
         {
-            var actualSQL = CreateWHEREClause(null, null, false);
+            var actualSQL = CreateWHEREClause(null);
 
             Assert.IsNull(actualSQL);
         }
 
+        //[TestMethod]
+        //[ExpectedException(typeof(EmptyCollectionException))]
+        //public void CreateWHEREClause_NullCriteriaAndEmptyColumnsCollectionAndSuppressNulls()
+        //{
+        //    var actualSQL = CreateWHEREClause(null, new List<string>(), true);
+        //}
+
+        //[TestMethod]
+        //public void CreateWHEREClause_NullCriteriaAndOneColumnAndSuppressNulls()
+        //{
+        //    var expectedSQL = " WHERE (`service` IS NOT NULL ) ";
+
+        //    var actualSQL = CreateWHEREClause(null, new List<string>() { "service" }, true).ToString();
+
+        //    Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+        //    Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        //}
+
+        //[TestMethod]
+        //public void CreateWHEREClause_NullCriteriaAndMultipleColumnsAndSuppressNulls()
+        //{
+        //    var expectedSQL = " WHERE (`service` IS NOT NULL OR `fund` IS NOT NULL ) ";
+
+        //    var actualSQL = CreateWHEREClause(null, new List<string>() { "service", "fund" }, true).ToString();
+
+        //    Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+        //    Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        //}
+
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void CreateWHEREClause_NullCriteriaAndNoColumnsAndSuppressNulls()
+        public void CreateWHEREClause_EmptyCriteria_ThrowsEmptyCollectionException()
         {
-            var actualSQL = CreateWHEREClause(null, null, true);
+            Assert.IsNull(CreateWHEREClause(new List<Criteria>()));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(EmptyCollectionException))]
-        public void CreateWHEREClause_NullCriteriaAndEmptyColumnsCollectionAndSuppressNulls()
+        public void CreateWHEREClause_OneCriteria_MakesFirstCriteriaAndOrPropetyNull()
         {
-            var actualSQL = CreateWHEREClause(null, new List<string>(), true);
-        }
-
-        [TestMethod]
-        public void CreateWHEREClause_NullCriteriaAndOneColumnAndSuppressNulls()
-        {
-            var expectedSQL = " WHERE (`service` IS NOT NULL ) ";
-
-            var actualSQL = CreateWHEREClause(null, new List<string>() { "service" }, true).ToString();
-
-            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
-            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
-        }
-
-        [TestMethod]
-        public void CreateWHEREClause_NullCriteriaAndMultipleColumnsAndSuppressNulls()
-        {
-            var expectedSQL = " WHERE (`service` IS NOT NULL OR `fund` IS NOT NULL ) ";
-
-            var actualSQL = CreateWHEREClause(null, new List<string>() { "service", "fund" }, true).ToString();
-
-            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
-            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(EmptyCollectionException))]
-        public void CreateWHEREClause_EmptyCriteriaAndMultipleColumnsAndSuppressNulls()
-        {
-            var actualSQL = CreateWHEREClause(new List<Criteria>(), new List<string>() { "service", "fund" }, true);
-        }
-
-        [TestMethod]
-        public void CreateWHEREClause_OneCriteriaAndSingleColumnAndNoSuppressNulls_MakesFirstCriteriaAndOrPropetyNull()
-        {
-            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria1 }, new List<string>() { "service" }, false).ToString();
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria1 }).ToString();
 
             Assert.IsTrue(criteria1.AndOr == null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(Exception))]
-        public void CreateWHEREClause_OneCriteriaAndSingleColumnAndNoSuppressNulls_CriteriaHasNullFilter()
+        public void CreateWHEREClause_OneCriteriaAndCriteriaHasNullFilter()
         {
             var nullFilterCriteria = new Criteria();
             nullFilterCriteria.AndOr = Conjunction.And;
@@ -260,30 +241,30 @@ namespace QueryBuilder.SqlGenerators.Tests
             nullFilterCriteria.Operator = Operator.EqualTo;
             nullFilterCriteria.Filter = null;
 
-            var actualSQL = CreateWHEREClause(new List<Criteria>() { nullFilterCriteria }, new List<string>() { "service" }, false);
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { nullFilterCriteria });
         }
 
         [TestMethod]
-        public void CreateWHEREClause_OneCriteriaAndSingleColumnAndNoSuppressNulls_OperatorIsNotNull()
+        public void CreateWHEREClause_OneCriteriaOperatorIsNotNull()
         {
             criteria2.Filter = null;
             criteria2.Operator = Operator.IsNotNull;
             var expectedSQL = " WHERE  service Is Not Null  ";
 
-            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria2 }, new List<string>() { "service" }, false).ToString();
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria2 }).ToString();
 
             Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
             Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
         }
 
         [TestMethod]
-        public void CreateWHEREClause_CriteriaIsSubQueryAndSingleColumnAndNoSuppressNulls()
+        public void CreateWHEREClause_CriteriaIsSubQuery()
         {
             criteria1.Filter = "select distinct fund from county_spending_detail";
             criteria1.Operator = Operator.In;
             var expectedSQL = $" WHERE  fund In ({criteria1.Filter}) ";
 
-            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria1 }, new List<string>() { "service" }, false).ToString();
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria1 }).ToString();
 
             Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
             Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
@@ -299,7 +280,7 @@ namespace QueryBuilder.SqlGenerators.Tests
             criteria.Operator = Operator.GreaterThan;
             criteria.Filter = "a column";
             
-            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria }, null, false);
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria });
         }
 
         [TestMethod]
@@ -307,7 +288,7 @@ namespace QueryBuilder.SqlGenerators.Tests
         {
             var expectedSQL = " WHERE  service In ('service1','service2') ";
 
-            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria2 }, null, false).ToString();
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria2 }).ToString();
 
             Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
             Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
@@ -323,7 +304,7 @@ namespace QueryBuilder.SqlGenerators.Tests
             criteria.Filter = "account1,account2";
             var expectedSQL = " WHERE  account In (account1,account2) ";
 
-            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria }, null, false).ToString();
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria }).ToString();
 
             Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
             Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
@@ -334,7 +315,7 @@ namespace QueryBuilder.SqlGenerators.Tests
         {
             var expectedSQL = " WHERE  fund = 'fund1'  ";
 
-            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria1 }, null, false).ToString();
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria1 }).ToString();
 
             Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
             Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
@@ -350,7 +331,7 @@ namespace QueryBuilder.SqlGenerators.Tests
             criteria.Filter = "123";
             var expectedSQL = " WHERE  account = 123  ";
 
-            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria }, null, false).ToString();
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria }).ToString();
 
             Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
             Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
@@ -358,7 +339,7 @@ namespace QueryBuilder.SqlGenerators.Tests
 
         [TestMethod]
         [ExpectedException(typeof(BadSQLException))]
-        public void CreateWHEREClause_OneCriteriaAndSingleColumnAndNoSuppressNulls_CriteriaHasNullOperator()
+        public void CreateWHEREClause_OneCriteriaAndCriteriaHasNullOperator()
         {
             var nullFilterCriteria = new Criteria();
             nullFilterCriteria.AndOr = Conjunction.And;
@@ -366,12 +347,12 @@ namespace QueryBuilder.SqlGenerators.Tests
             nullFilterCriteria.Operator = null;
             nullFilterCriteria.Filter = "service1";
 
-            var actualSQL = CreateWHEREClause(new List<Criteria>() { nullFilterCriteria }, null, false);
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { nullFilterCriteria });
         }
 
         [TestMethod]
         [ExpectedException(typeof(BadSQLException))]
-        public void CreateWHEREClause_OneCriteriaAndSingleColumnAndNoSuppressNulls_CriteriaHasNullColumn()
+        public void CreateWHEREClause_OneCriteriaAndCriteriaHasNullColumn()
         {
             var nullFilterCriteria = new Criteria();
             nullFilterCriteria.AndOr = Conjunction.And;
@@ -379,7 +360,7 @@ namespace QueryBuilder.SqlGenerators.Tests
             nullFilterCriteria.Operator = Operator.EqualTo;
             nullFilterCriteria.Filter = "service1";
 
-            var actualSQL = CreateWHEREClause(new List<Criteria>() { nullFilterCriteria }, null, false);
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { nullFilterCriteria });
         }
 
         //==========================================================================================
