@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using QueryBuilder.Config;
+using QueryBuilder.Utilities;
 
 namespace QueryBuilder.SqlGenerators
 {
@@ -69,9 +70,11 @@ namespace QueryBuilder.SqlGenerators
 
         public override string ToString()
         {
+            var modifiedFilter = (FilterIsSubQuery()) ? $"({Filter})" : Filter;
+
             if (OrIsNull && Filter != null)
             {
-                return $" {AndOr} {FrontParenthesis}{Column} {Operator} {Filter} OR {Column} IS NULL {EndParenthesis} ";
+                return $" {AndOr} {FrontParenthesis}{Column} {Utility.GetDisplayName(Operator)} {modifiedFilter} OR {Column} IS NULL {EndParenthesis} ";
             }
             else if (OrIsNull && Filter == null)
             {
@@ -79,7 +82,7 @@ namespace QueryBuilder.SqlGenerators
             }
             else
             {
-                return $" {AndOr} {FrontParenthesis}{Column} {Operator} {Filter}{EndParenthesis} ";
+                return $" {AndOr} {FrontParenthesis}{Column} {Utility.GetDisplayName(Operator)} {modifiedFilter}{EndParenthesis} ";
             }
         }
 
@@ -87,5 +90,17 @@ namespace QueryBuilder.SqlGenerators
         {
             return base.GetHashCode();
         }
+
+        public bool FilterIsSubQuery()
+        {
+            if (Filter == null) return false;
+
+            if (Filter.Length >= 6)
+            {
+                return (Filter.Substring(0, 6).ToLower() == "select") ? true : false;
+            }
+            return false;
+        }
+
     }
 }

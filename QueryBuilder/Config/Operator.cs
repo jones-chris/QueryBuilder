@@ -10,9 +10,9 @@ namespace QueryBuilder.Config
     public enum Operator
     {
         [Display(Name = "=")]
-        Equals,
+        EqualTo,
         [Display(Name = "<>")]
-        NotEquals,
+        NotEqualTo,
         [Display(Name = ">=")]
         GreaterThanOrEquals,
         [Display(Name = "<=")]
@@ -25,9 +25,9 @@ namespace QueryBuilder.Config
         Like,
         [Display(Name = "Not Like")]
         NotLike,
-        [Display(Name = "In List")]
+        [Display(Name = "In")]
         In,
-        [Display(Name = "Not In List")]
+        [Display(Name = "Not In")]
         NotIn,
         [Display(Name = "Is Null")]
         IsNull,

@@ -83,7 +83,7 @@ public abstract class BaseSqlGenerator
             //for each row
             foreach (var theCriteria in criteria)
             {
-                if (!CriteriaHasNullValues(theCriteria))
+                if (!CriteriaHasNullColumnOrOperator(theCriteria))
                 {
                     if (theCriteria.Operator == Operator.IsNull || theCriteria.Operator == Operator.IsNotNull)
                     {
@@ -98,10 +98,10 @@ public abstract class BaseSqlGenerator
                         
                     // determine if Criteria's filter property is a subquery.  We have tested that the filter property is not null
                     // or an empty string.
-                    if (IsSubQuery(theCriteria.Filter))
+                    if (theCriteria.FilterIsSubQuery())
                     {
                         theCriteria.Filter = SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter);
-                        sql.Append($" ({theCriteria.ToString()}) ");
+                        sql.Append($" {theCriteria.ToString()} ");
                         continue;
                     }
 
@@ -135,10 +135,6 @@ public abstract class BaseSqlGenerator
                                 sql.Append($" {theCriteria.ToString()} ");
                             }
                         }
-                        //else if (theCriteria.Operator.ToLower() == "is null")
-                        //{
-                        //    sql.Append($" {theCriteria.ToString()} ");
-                        //}
                         else
                         {
                             var cleansedValue = SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter);
@@ -271,14 +267,14 @@ public abstract class BaseSqlGenerator
         }
     }
 
-    private bool IsSubQuery(string filter)
-    {
-        if (filter.Length >= 6)
-        {
-            return (filter.Substring(0, 6).ToLower() == "select") ? true : false;
-        }
-        return false;
-    }
+    //private bool IsSubQuery(string filter)
+    //{
+    //    if (filter.Length >= 6)
+    //    {
+    //        return (filter.Substring(0, 6).ToLower() == "select") ? true : false;
+    //    }
+    //    return false;
+    //}
 
     //private IList<Criteria> AddParenthesisToCriteria(IList<Criteria> criteria)
     //{
@@ -325,7 +321,7 @@ public abstract class BaseSqlGenerator
     //    return criteria;
     //}
 
-    private bool CriteriaHasNullValues(Criteria criteria)
+    private bool CriteriaHasNullColumnOrOperator(Criteria criteria)
     {
         // Test each criteria's Column, Operator, and Filter properties.  If any criteria in list is null, then return true.
         if (criteria.Column == null) return true;

@@ -26,13 +26,13 @@ namespace QueryBuilder.SqlGenerators.Tests
         {
             criteria1.AndOr = Conjunction.And;
             criteria1.Column = "fund";
-            criteria1.Operator = Operator.Equals;
+            criteria1.Operator = Operator.EqualTo;
             criteria1.Filter = "fund1";
 
-            criteria1.AndOr = Conjunction.And;
-            criteria1.Column = "service";
-            criteria1.Operator = Operator.In;
-            criteria1.Filter = "service1,serivce2";
+            criteria2.AndOr = Conjunction.And;
+            criteria2.Column = "service";
+            criteria2.Operator = Operator.In;
+            criteria2.Filter = "service1,serivce2";
 
             multipleCriteria.Add(criteria1);
             multipleCriteria.Add(criteria2);
@@ -239,12 +239,45 @@ namespace QueryBuilder.SqlGenerators.Tests
             var nullFilterCriteria = new Criteria();
             nullFilterCriteria.AndOr = Conjunction.And;
             nullFilterCriteria.Column = "service";
-            nullFilterCriteria.Operator = Operator.Equals;
+            nullFilterCriteria.Operator = Operator.EqualTo;
             nullFilterCriteria.Filter = null;
 
             var actualSQL = CreateWHEREClause(new List<Criteria>() { nullFilterCriteria }, new List<string>() { "service" }, false);
+        }
 
-            Assert.IsTrue(true);
+        [TestMethod]
+        public void CreateWHEREClause_OneCriteriaAndSingleColumnAndNoSuppressNulls_OperatorIsNotNull()
+        {
+            criteria2.Filter = null;
+            criteria2.Operator = Operator.IsNotNull;
+            var expectedSQL = " WHERE `fund` = 'fund1'  AND `service` Is Not Null ";
+
+            var actualSQL = CreateWHEREClause(multipleCriteria, new List<string>() { "service" }, false).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
+
+        [TestMethod]
+        public void CreateWHEREClause_CriteriaIsSubQueryAndSingleColumnAndNoSuppressNulls()
+        {
+            criteria1.Filter = "select distinct fund from county_spending_detail";
+            criteria1.Operator = Operator.In;
+            var expectedSQL = $" WHERE  fund In ({criteria1.Filter}) ";
+
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria1 }, new List<string>() { "service" }, false).ToString();
+
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        public void CreateWHEREClause_CannotFindColumnDataTypeThrowsException()
+        {
+            criteria1.Column = "this_column_will_not_be_found";
+
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria1 }, null, false);
         }
 
         //==========================================================================================
