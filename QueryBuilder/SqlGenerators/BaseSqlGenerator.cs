@@ -145,8 +145,8 @@ public abstract class BaseSqlGenerator
                 }
                 else
                 {
-                    throw new BadSQLException($"The criteria at index {criteria.IndexOf(theCriteria)} in the Criteria list has a " +
-                                               "null value for it's Column, Operator, or Filter.  Please make sure each Criteria has " +
+                    throw new BadSQLException("One or more of the criteria in the Criteria list has a " +
+                                               "null value for it's Column and/or operator.  Please make sure each criteria has " +
                                                "has a non-null value for each of these properties");
                 }
             }

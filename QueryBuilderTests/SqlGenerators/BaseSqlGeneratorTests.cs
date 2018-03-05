@@ -52,11 +52,13 @@ namespace QueryBuilder.SqlGenerators.Tests
             base.openingColumnMark = '`';
             base.closingColumnMark = '`';
 
+            criteria1 = new Criteria();
             criteria1.AndOr = Conjunction.And;
             criteria1.Column = "fund";
             criteria1.Operator = Operator.EqualTo;
             criteria1.Filter = "fund1";
 
+            criteria2 = new Criteria();
             criteria2.AndOr = Conjunction.And;
             criteria2.Column = "service";
             criteria2.Operator = Operator.In;
@@ -266,9 +268,9 @@ namespace QueryBuilder.SqlGenerators.Tests
         {
             criteria2.Filter = null;
             criteria2.Operator = Operator.IsNotNull;
-            var expectedSQL = " WHERE `fund` = 'fund1'  AND `service` Is Not Null ";
+            var expectedSQL = " WHERE  service Is Not Null  ";
 
-            var actualSQL = CreateWHEREClause(multipleCriteria, new List<string>() { "service" }, false).ToString();
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria2 }, new List<string>() { "service" }, false).ToString();
 
             Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
             Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
@@ -352,6 +354,32 @@ namespace QueryBuilder.SqlGenerators.Tests
 
             Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
             Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(BadSQLException))]
+        public void CreateWHEREClause_OneCriteriaAndSingleColumnAndNoSuppressNulls_CriteriaHasNullOperator()
+        {
+            var nullFilterCriteria = new Criteria();
+            nullFilterCriteria.AndOr = Conjunction.And;
+            nullFilterCriteria.Column = "service";
+            nullFilterCriteria.Operator = null;
+            nullFilterCriteria.Filter = "service1";
+
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { nullFilterCriteria }, null, false);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(BadSQLException))]
+        public void CreateWHEREClause_OneCriteriaAndSingleColumnAndNoSuppressNulls_CriteriaHasNullColumn()
+        {
+            var nullFilterCriteria = new Criteria();
+            nullFilterCriteria.AndOr = Conjunction.And;
+            nullFilterCriteria.Column = null;
+            nullFilterCriteria.Operator = Operator.EqualTo;
+            nullFilterCriteria.Filter = "service1";
+
+            var actualSQL = CreateWHEREClause(new List<Criteria>() { nullFilterCriteria }, null, false);
         }
 
         //==========================================================================================
