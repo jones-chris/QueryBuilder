@@ -48,6 +48,8 @@ namespace QueryBuilder.SqlGenerators
 
         public override string CreateSql(Query query)
         {
+            query.SetOrderBy(true); // must set Order By to true so that OFFSET and FETCH can be used.
+
             base.tableSchema = query.TableSchema;
 
             try
@@ -74,8 +76,10 @@ namespace QueryBuilder.SqlGenerators
 
                 sql.Append(CreateGROUPBYCluase(query.GroupBy, query.Columns));
                 sql.Append(CreateORDERBYCluase(query.OrderBy, query.Columns, query.Ascending));
-                sql.Append(CreateLimitClause(query.Limit));
                 sql.Append(CreateOffsetClause(query.Offset));
+                sql.Append(CreateFetchClause(query.Limit));
+                //sql.Append(CreateLimitClause(query.Limit));
+                //sql.Append(CreateOffsetClause(query.Offset));
                 return sql.ToString().Replace("  ", " ");
             }
             catch (Exception)
@@ -84,24 +88,34 @@ namespace QueryBuilder.SqlGenerators
             }
         }
 
-        private StringBuilder CreateSELECTClause(bool distinct, List<string> columns, string limit)
+        //private StringBuilder CreateSELECTClause(bool distinct, List<string> columns, string limit)
+        //{
+        //    if (columns == null) return null;
+
+        //    string startSql = (distinct == true) ? "SELECT DISTINCT " : "SELECT ";
+        //    StringBuilder sql = new StringBuilder(startSql);
+
+        //    if (limit != null)
+        //    {
+        //        sql.Append(" TOP " + SQLCleanser.EscapeAndRemoveWords(limit));
+        //    }
+
+        //    foreach (string column in columns)
+        //    {
+        //        sql.Append(string.Format("{0}{1}{2}, ", openingColumnMark, SQLCleanser.EscapeAndRemoveWords(column), closingColumnMark));
+        //    }
+        //    sql = sql.Remove(sql.Length - 2, 2).Append(" ");
+        //    return sql.Replace("  ", " ");
+        //}
+
+        private StringBuilder CreateOffsetClause(long? offset)
         {
-            if (columns == null) return null;
+            return (offset == null) ? null : new StringBuilder($" OFFSET {offset} ROWS ").Replace("  ", " ");
+        }
 
-            string startSql = (distinct == true) ? "SELECT DISTINCT " : "SELECT ";
-            StringBuilder sql = new StringBuilder(startSql);
-
-            if (limit != null)
-            {
-                sql.Append(" TOP " + SQLCleanser.EscapeAndRemoveWords(limit));
-            }
-
-            foreach (string column in columns)
-            {
-                sql.Append(string.Format("{0}{1}{2}, ", openingColumnMark, SQLCleanser.EscapeAndRemoveWords(column), closingColumnMark));
-            }
-            sql = sql.Remove(sql.Length - 2, 2).Append(" ");
-            return sql.Replace("  ", " ");
+        private StringBuilder CreateFetchClause(long? limit)
+        {
+            return (limit == null) ? null : new StringBuilder($" FETCH NEXT {limit} ROWS ONLY").Replace("  ", " ");
         }
     }
 }

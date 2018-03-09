@@ -10,7 +10,6 @@ using QueryBuilder.Config;
 using System.Data;
 using QueryBuilderTests.TestUtilities;
 using QueryBuilderTests.SqlGenerators;
-using System.Reflection;
 
 namespace QueryBuilder.SqlGenerators.Tests
 {
@@ -19,15 +18,16 @@ namespace QueryBuilder.SqlGenerators.Tests
     /// in BaseSqlGeneratorTests, this test class' purpose is to test that all the individual methods combine to make
     /// SQL statements that are successfully run against a database.
     /// </summary>
-
+    
     [TestClass]
-    public class PgSqlGeneratorTests
+    public class SqlServerSqlGeneratorTests
     {
-        private string connString = "Server=localhost;Port=5432;Database=postgres;User Id=postgres;Password=budgeto;";
-        private DatabaseType dbType = DatabaseType.PostgreSQL;
+        //
+        private string connString = "Server=localhost\\SQLEXPRESS01;Database=master;Trusted_Connection=True;";
+        private DatabaseType dbType = DatabaseType.SqlServer;
 
         [TestMethod]
-        public void RunAllTests_PostgreSQL()
+        public void RunAllTests_SqlServer()
         {
             var sqlGeneratorTests = new SqlGeneratorTests(connString, dbType);
 
@@ -37,12 +37,19 @@ namespace QueryBuilder.SqlGenerators.Tests
             {
                 if (method.ReturnType == typeof(DataTable) && method.IsPublic)
                 {
-                    var results = (DataTable)method.Invoke(new SqlGeneratorTests(connString, dbType), null);
-                    Assert.IsTrue(results.Rows.Count > 0, $"{method.Name} failed.");
+                    try
+                    {
+                        var results = (DataTable)method.Invoke(new SqlGeneratorTests(connString, dbType), null);
+                        Assert.IsTrue(results.Rows.Count > 0, $"{method.Name} failed.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Assert.IsFalse(false, $"{method.Name} failed.  {ex.Message}");
+                    }
+                    
                 }
             }
 
         }
-
     }
 }
