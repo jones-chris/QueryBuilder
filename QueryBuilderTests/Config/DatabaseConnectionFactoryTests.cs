@@ -11,6 +11,8 @@ using QueryBuilder.Exceptions;
 namespace QueryBuilder.Config.Tests
 {
     [TestClass]
+    [DeploymentItem(@"x86\SQLite.Interop.dll", "x86")]
+    [DeploymentItem(@"x64\SQLite.Interop.dll", "x64")]
     public class DatabaseConnectionFactoryTests
     {
         [TestMethod]

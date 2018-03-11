@@ -17,4 +17,3 @@ C:\Users\Public\Repos\QueryBuilder\QueryBuilder\bin\Debug\System.Data.SQLite.Lin
 C:\Users\Public\Repos\QueryBuilder\QueryBuilder\bin\Debug\EntityFramework.xml
 C:\Users\Public\Repos\QueryBuilder\QueryBuilder\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\Public\Repos\QueryBuilder\QueryBuilder\bin\Debug\System.Data.SQLite.xml
-C:\Users\Public\Repos\QueryBuilder\QueryBuilder\obj\Debug\QueryBuilder.csprojResolveAssemblyReference.cache

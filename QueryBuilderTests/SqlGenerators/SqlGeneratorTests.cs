@@ -68,7 +68,7 @@ namespace QueryBuilderTests.SqlGenerators
             criteriaWithSubQuery.AndOr = Conjunction.And;
             criteriaWithSubQuery.Column = "fund";
             criteriaWithSubQuery.Operator = Operator.In;
-            criteriaWithSubQuery.Filter = "select distinct fund from county_spending_detail limit 10";
+            criteriaWithSubQuery.Filter = "select distinct fund from county_spending_detail";
 
             // set up criteriaWithIsNotNull
             criteriaWithIsNotNull = new Criteria();

@@ -108,12 +108,12 @@ namespace QueryBuilder.SqlGenerators
         //    return sql.Replace("  ", " ");
         //}
 
-        private StringBuilder CreateOffsetClause(long? offset)
+        protected override StringBuilder CreateOffsetClause(long? offset)
         {
             return (offset == null) ? null : new StringBuilder($" OFFSET {offset} ROWS ").Replace("  ", " ");
         }
 
-        private StringBuilder CreateFetchClause(long? limit)
+        protected StringBuilder CreateFetchClause(long? limit)
         {
             return (limit == null) ? null : new StringBuilder($" FETCH NEXT {limit} ROWS ONLY").Replace("  ", " ");
         }

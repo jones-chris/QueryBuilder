@@ -13,42 +13,37 @@ using QueryBuilderTests.SqlGenerators;
 
 namespace QueryBuilder.SqlGenerators.Tests
 {
-    /// <summary>
-    /// This class only has one method, CreateSql.  Because the individual methods called in CreateSql have been tested
-    /// in BaseSqlGeneratorTests, this test class' purpose is to test that all the individual methods combine to make
-    /// SQL statements that are successfully run against a database.
-    /// </summary>
-    
     [TestClass]
-    public class SqlServerSqlGeneratorTests
+    public class MySqlSqlGeneratorTests
     {
-        private string connString = "Server=localhost\\SQLEXPRESS01;Database=master;Trusted_Connection=True;";
-        private DatabaseType dbType = DatabaseType.SqlServer;
+        private string connString = "Server=localhost;Database=sys;UID=root;Password=budgeto";
+        private DatabaseType dbType = DatabaseType.MySql;
 
         [TestMethod]
-        public void RunAllTests_SqlServer()
+        public void RunAllTests_MySQL()
         {
             var sqlGeneratorTests = new SqlGeneratorTests(connString, dbType);
 
             var methods = sqlGeneratorTests.GetType().GetMethods();
 
+            DataTable results = null;
             foreach (var method in methods)
             {
+                results = null;
                 if (method.ReturnType == typeof(DataTable) && method.IsPublic)
                 {
                     try
                     {
-                        var results = (DataTable)method.Invoke(new SqlGeneratorTests(connString, dbType), null);
+                        results = (DataTable)method.Invoke(new SqlGeneratorTests(connString, dbType), null);
                         Assert.IsTrue(results.Rows.Count > 0, $"{method.Name} failed.");
                     }
                     catch (Exception ex)
                     {
-                        Assert.IsFalse(false, $"{method.Name} failed.  {ex.Message}");
+                        Assert.IsTrue(false, $"{method.Name} failed.  {ex.Message}.  {ex.InnerException}");
                     }
-                    
+
                 }
             }
-
         }
     }
 }
