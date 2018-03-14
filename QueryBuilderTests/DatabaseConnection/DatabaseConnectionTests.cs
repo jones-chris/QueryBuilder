@@ -22,7 +22,7 @@ namespace QueryBuilder.DatabaseConnections.Tests
         {
             var sql = "select * from novena.county_spending_detail limit 10;";
 
-            var dt = dbConnection.query(sql);
+            var dt = dbConnection.Query(sql);
 
             Assert.IsTrue(dt.Rows.Count == 10);
         }
@@ -30,7 +30,7 @@ namespace QueryBuilder.DatabaseConnections.Tests
         [TestMethod]
         public void userSignIn_PostgreSQL()
         {
-            dbConnection.userSignIn();
+            dbConnection.UserSignIn();
 
             Assert.IsTrue(true); // This will pass the test if no exception is thrown before this line.
         }
@@ -40,7 +40,7 @@ namespace QueryBuilder.DatabaseConnections.Tests
         {
             var table = "county_spending_detail";
 
-            var dt = dbConnection.getSchema(table);
+            var dt = dbConnection.GetColumns(table);
 
             Assert.IsTrue(dt.Rows.Count > 0);
         }

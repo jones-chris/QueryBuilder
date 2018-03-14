@@ -62,7 +62,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlGenerators\BaseSqlGeneratorTests.cs" />
     <Compile Include="SqlGenerators\MySqlSqlGeneratorTests.cs" />
+    <Compile Include="SqlGenerators\OracleSqlGeneratorTests.cs" />
     <Compile Include="SqlGenerators\PgSqlGeneratorTests.cs" />
+    <Compile Include="SqlGenerators\SqlFunctionsTests.cs" />
     <Compile Include="SqlGenerators\SqlGeneratorTests.cs" />
     <Compile Include="SqlGenerators\SqliteSqlGeneratorTests.cs" />
     <Compile Include="SqlGenerators\SqlServerSqlGeneratorTests.cs" />

@@ -30,5 +30,30 @@ namespace QueryBuilderTests.TestUtilities
 
             return dt;
         }
+
+        /// <summary>
+        /// Check that the strings are the same length.
+        /// </summary>
+        /// <param name="expectedSQL"></param>
+        /// <param name="actualSQL"></param>
+        /// <returns>boolean</returns>
+        public static bool sqlStringsAreSameLength(string expectedSQL, string actualSQL) {
+            return expectedSQL.Length == actualSQL.Length;
+        }
+
+        /// <summary>
+        /// Check that each string has the same characters at each index.
+        /// </summary>
+        /// <param name="expectedSQL"></param>
+        /// <param name="actualSQL"></param>
+        /// <returns>boolean</returns>
+        public static bool sqlStringsMatch(string expectedSQL, string actualSQL) {
+            for (int i = 0; i < actualSQL.Length; i++) {
+                if (actualSQL[i] != expectedSQL[i]) return false;
+            }
+            return true;
+        }
+
+
     }
 }

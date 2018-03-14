@@ -12,8 +12,8 @@ namespace QueryBuilder.SqlGenerators
     {
         public OracleSqlGenerator()
         {
-            base.openingColumnMark = '"';
-            base.closingColumnMark = '"';
+            base.openingColumnMark = ' ';
+            base.closingColumnMark = ' ';
 
             //Website for type mappings:
             //https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/oracle-data-type-mappings

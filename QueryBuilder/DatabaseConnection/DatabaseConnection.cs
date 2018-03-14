@@ -21,7 +21,7 @@ namespace QueryBuilder.DatabaseConnections
             this.dbCommand = dbCommand;
         }
 
-        public DataTable query(string sql)
+        public DataTable Query(string sql)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace QueryBuilder.DatabaseConnections
             }
         }
 
-        public void userSignIn()
+        public void UserSignIn()
         {
             try
             {
@@ -62,7 +62,25 @@ namespace QueryBuilder.DatabaseConnections
             }
         }
 
-        public DataTable getSchema(string tableName)
+        public DataTable GetDatabaseSchemas()
+        {
+            try
+            {
+                dbConnection.Open();
+
+                return dbConnection.GetSchema("SCHEMATA");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+        }
+
+        public DataTable GetColumns(string tableName)
         {
             try
             {
@@ -80,6 +98,38 @@ namespace QueryBuilder.DatabaseConnections
             }
         }
 
+        public DataTable GetSchemaTables(string schemaName)
+        {
+            try
+            {
+                dbConnection.Open();
+
+                return dbConnection.GetSchema("Columns", new string[4] { null, null, schemaName, null });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+        }
+
+        public DataTable GetSchemaViews(string schemaName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DataTable GetSchemaTablesAndViews(string schemaName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DataTable GetUserTablesAndViews(string username)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

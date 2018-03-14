@@ -9,8 +9,14 @@ namespace QueryBuilder.DatabaseConnections
 {
     public interface IDatabaseConnection
     {
-        DataTable query(string sql);
-        void userSignIn();
-        DataTable getSchema(string tableName);
+        DataTable Query(string sql);
+        void UserSignIn();
+        DataTable GetDatabaseSchemas();
+        DataTable GetSchemaTables(string schemaName);
+        DataTable GetSchemaViews(string schemaName);
+        DataTable GetSchemaTablesAndViews(string schemaName);
+        DataTable GetUserTablesAndViews(string username);
+        DataTable GetColumns(string tableName);
+        
     }
 }

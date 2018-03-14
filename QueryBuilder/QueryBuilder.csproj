@@ -103,6 +103,7 @@
     <Compile Include="SqlGenerators\Query.cs" />
     <Compile Include="SqlGenerators\RedshiftSqlGenerator.cs" />
     <Compile Include="SqlGenerators\SQLCleanser.cs" />
+    <Compile Include="SqlGenerators\SqlFunctions.cs" />
     <Compile Include="SqlGenerators\SqliteSqlGenerator.cs" />
     <Compile Include="SqlGenerators\SqlServerSqlGenerator.cs" />
     <Compile Include="Utilities\Interpolator.cs" />

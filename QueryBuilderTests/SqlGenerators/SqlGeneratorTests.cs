@@ -89,7 +89,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetLimit(100);
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count == 100);
         }
@@ -101,7 +101,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetSuppressNulls(false);
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count == 100);
         }
@@ -113,7 +113,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetLimit(100);
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count > 0);
         }
@@ -126,7 +126,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetOffset(50);
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count > 0);
         }
@@ -138,7 +138,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetGroupBy(true);
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count > 0);
         }
@@ -150,7 +150,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetOrderBy(true);
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count > 0);
         }
@@ -163,7 +163,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetOrderBy(true);
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count > 0);
         }
@@ -176,7 +176,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetCriteria(new List<Criteria>() { criteria1 });
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count > 0);
         }
@@ -188,7 +188,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetCriteria(new List<Criteria>() { criteria1 });
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count > 0);
         }
@@ -200,7 +200,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetCriteria(new List<Criteria>() { criteria1 });
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count > 0);
         }
@@ -213,7 +213,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetCriteria(multipleCriteria);
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count > 0);
         }
@@ -227,7 +227,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetCriteria(new List<Criteria>() { criteriaWithSubQuery });
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count > 0);
         }
@@ -241,7 +241,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetCriteria(new List<Criteria>() { criteriaWithSubQuery });
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count > 0);
         }
@@ -256,7 +256,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetCriteria(multipleCriteria);
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count > 0);
         }
@@ -271,7 +271,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetCriteria(multipleCriteria);
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count > 0);
         }
@@ -284,7 +284,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetCriteria(new List<Criteria>() { criteriaWithIsNotNull });
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count > 0);
         }
@@ -298,7 +298,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetCriteria(new List<Criteria>() { criteriaWithIsNotNull });
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count > 0);
         }
@@ -313,7 +313,7 @@ namespace QueryBuilderTests.SqlGenerators
             basicQuery.SetCriteria(multipleCriteria);
 
             var sql = sqlGenerator.CreateSql(basicQuery);
-            return dbConnection.query(sql);
+            return dbConnection.Query(sql);
 
             //Assert.IsTrue(results.Rows.Count > 0);
         }
