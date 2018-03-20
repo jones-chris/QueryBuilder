@@ -7,10 +7,11 @@ using System.Data;
 
 namespace QueryBuilder.SqlGenerators
 {
-    public class Query
+    public struct Query
     {
-        private string _queryName;
-        private string _sql;
+        //private string _queryName;
+        //private string _sql;
+        public string QueryName { get; }
         public DataTable TableSchema { get; private set; }
         public bool Distinct { get; private set; }
         public IList<string> Columns { get; private set; }
@@ -18,29 +19,38 @@ namespace QueryBuilder.SqlGenerators
         public List<Criteria> Criteria { get; private set; }
         public bool GroupBy { get; private set; }
         public bool OrderBy { get; private set; }
-        public long Limit { get; private set; }
+        public long? Limit { get; private set; }
         public bool Ascending { get; private set; }
-        public long Offset { get; private set; }
+        public long? Offset { get; private set; }
         public bool SuppressNulls { get; private set; }
 
         public Query(string queryName, string sql = null)
         {
-            _queryName = queryName;
-            _sql = sql;
+            //_queryName = queryName;
+            //_sql = sql;
+            QueryName = queryName;
+            TableSchema = null;
+            Distinct = false;
             Columns = new List<string>();
+            Table = null;
             Criteria = new List<Criteria>();
+            GroupBy = false;
+            OrderBy = false;
+            Limit = null;
+            Ascending = false;
+            Offset = null;
             SuppressNulls = true;
         }
 
-        public string QueryName
-        {
-            get { return _queryName; }
-        }
+        //public string QueryName
+        //{
+        //    get { return _queryName; }
+        //}
 
-        public string SQL
-        {
-            get { return _sql; }
-        }
+        //public string SQL
+        //{
+        //    get { return _sql; }
+        //}
 
         public Query SetTableSchema(DataTable tableSchema)
         {

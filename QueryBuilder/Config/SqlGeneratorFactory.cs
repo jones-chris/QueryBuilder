@@ -32,11 +32,11 @@ namespace QueryBuilder.Config
                 else if (databaseType.Equals(DatabaseType.SqlServer))
                 {
                     return new SqlServerSqlGenerator();
-                }
-                else if (databaseType.Equals(DatabaseType.Sqlite))
+                } 
+                else if (databaseType.Equals(DatabaseType.Sqlite)) 
                 {
                     return new SqliteSqlGenerator();
-                }
+                } 
                 else if (databaseType.Equals(DatabaseType.Redshift))
                 {
                     return new RedshiftSqlGenerator();

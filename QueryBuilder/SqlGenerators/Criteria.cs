@@ -10,7 +10,7 @@ using QueryBuilder.Utilities;
 namespace QueryBuilder.SqlGenerators
 {
     [Serializable, XmlRoot("Criteria"), XmlType("Criteria")]
-    public class Criteria
+    public struct Criteria
     {
         private bool _orIsNull;
         [XmlElement]
@@ -37,15 +37,15 @@ namespace QueryBuilder.SqlGenerators
             }
         }
 
-        public Criteria()
-        {
-            //AndOr = null;
-            //FrontParenthesis = null;
-            //Column = null;
-            //Operator = null;
-            //Filter = null;
-            //EndParenthesis = null;
-        }
+        //public Criteria()
+        //{
+        //    //AndOr = null;
+        //    //FrontParenthesis = null;
+        //    //Column = null;
+        //    //Operator = null;
+        //    //Filter = null;
+        //    //EndParenthesis = null;
+        //}
 
         //public Criteria(Conjunctions? AndOr = null, string FrontParenthesis = "", string Column = "", 
         //    string Operator = "", string Filter = "", string EndParenthesis = "", bool Locked = false)

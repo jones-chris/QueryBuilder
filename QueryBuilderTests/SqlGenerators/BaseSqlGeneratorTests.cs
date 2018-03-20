@@ -226,9 +226,12 @@ namespace QueryBuilder.SqlGenerators.Tests
         [TestMethod]
         public void CreateWHEREClause_OneCriteria_MakesFirstCriteriaAndOrPropetyNull()
         {
+            var expectedSQL = " WHERE  fund = 'fund1'  ";
+
             var actualSQL = CreateWHEREClause(new List<Criteria>() { criteria1 }).ToString();
 
-            Assert.IsTrue(criteria1.AndOr == null);
+            Assert.IsTrue(sqlStringsAreSameLength(expectedSQL, actualSQL));
+            Assert.IsTrue(sqlStringsMatch(expectedSQL, actualSQL));
         }
 
         [TestMethod]

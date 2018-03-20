@@ -9,9 +9,9 @@ namespace QueryBuilder.SqlGenerators
 {
     public static class SQLCleanser
     {
-        private static readonly string[] WordsNeedingEscaping = new string[] { "'", ";", @"""", "DROP", "CREATE", "DELETE", "INSERT", "UPDATE" };
-        private static readonly string[] WordsNeedingRemoval = new string[] { "-" };
-        private static readonly string[] SubQueryWords = new string[] { ";", "DROP", "CREATE", "DELETE", "INSERT", "UPDATE" };
+        // Only single and double quotes should be escaped because they COULD be included in criteria
+        private static readonly string[] WordsNeedingEscaping = new string[] { "'", @""""}; 
+        private static readonly string[] WordsNeedingRemoval = new string[] { "-", "=", ">", "<", "!=", "<>", ">=", "<=", ";", " DROP ", " CREATE ", " DELETE ", " INSERT ", " UPDATE ", "`" };
 
 
         public static string EscapeWords(string sql)

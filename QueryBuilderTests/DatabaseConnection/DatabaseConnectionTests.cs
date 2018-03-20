@@ -20,7 +20,7 @@ namespace QueryBuilder.DatabaseConnections.Tests
         [TestMethod]
         public void query_PostgreSQL()
         {
-            var sql = "select * from novena.county_spending_detail limit 10;";
+            var sql = "select * from county_spending_detail limit 10;";
 
             var dt = dbConnection.Query(sql);
 

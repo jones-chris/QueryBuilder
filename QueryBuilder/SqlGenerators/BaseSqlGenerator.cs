@@ -63,13 +63,18 @@ public abstract class BaseSqlGenerator
         }
         else
         {
+            // Create array so that contents can be modified.
+            Criteria[] copyCriteria = new Criteria[criteria.Count];
+            criteria.CopyTo(copyCriteria, 0); 
+
             // First criteria's AndOr property is not needed since it's coming directly after the WHERE keyword in the SQL statement.
-            criteria.First().AndOr = null;
+            copyCriteria[0].AndOr = null;
 
             StringBuilder sql = new StringBuilder(" WHERE ");
 
-            foreach (var theCriteria in criteria)
+            for (var i=0; i < copyCriteria.Length; i++)
             {
+                var theCriteria = copyCriteria[i];
                 if (! CriteriaHasNullColumnOrOperator(theCriteria))
                 {
                     // If Operator is "Is Null" or "Is Not Null".
@@ -113,9 +118,9 @@ public abstract class BaseSqlGenerator
                             // If the filter should have quotes.
                             if (shouldHaveQuotes)
                             {
-                                for (var i = 0; i < originalFilters.Count(); i++)
+                                for (var j = 0; j < originalFilters.Count(); j++)
                                 {
-                                    newFilters[i] = $"'{SQLCleanser.EscapeAndRemoveWords(originalFilters[i])}'";
+                                    newFilters[j] = $"'{SQLCleanser.EscapeAndRemoveWords(originalFilters[j])}'";
                                 }
                                 theCriteria.Filter = "(" + string.Join(",", newFilters) + ")";
                                 sql.Append($" {theCriteria.ToString()} ");
